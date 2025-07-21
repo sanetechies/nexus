@@ -1,0 +1,3 @@
+0000000000000000000000000000000000000000 8c13c366722bbdac25553984ea06088b9df073e6 nehahk13 <45285264-nehahk13@users.noreply.replit.com> 1753019783 +0000	commit (initial): Initial commit
+8c13c366722bbdac25553984ea06088b9df073e6 df3b34e73623f06f0dd94f76fc614f01c7c90614 nehahk13 <45285264-nehahk13@users.noreply.replit.com> 1753023897 +0000	commit: Create initial application layout and core UI components for mood map
+df3b34e73623f06f0dd94f76fc614f01c7c90614 e4279d89f481506188c06f63e3a9a22eb242e3cc nehahk13 <45285264-nehahk13@users.noreply.replit.com> 1753024125 +0000	commit: Allow users to search for locations and find nearby mood data
