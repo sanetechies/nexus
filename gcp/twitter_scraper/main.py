@@ -9,7 +9,7 @@ def scrape_twitter(request):
     token = "AAAAAAAAAAAAAAAAAAAAAP%2Bw3AEAAAAAIQXaifKjtfWIk%2FeN6allHYD%2B9gI%3DvmiDeBopOZQmu4UObyyLZc6HfY1v5tdJqect8lLeBSCBcowGiq"
 
     headers = {"Authorization": f"Bearer {token}"}
-    query = "bengaluru OR bangalore OR rain OR flood OR traffic OR civic OR weather"
+    query = "bengaluru OR bangalore OR rain OR flood OR traffic OR riot OR chaos OR civic OR weather"
     url = "https://api.twitter.com/2/tweets/search/recent"
     
     max_pages = 10  # Adjust for more data (up to rate limit)
@@ -39,7 +39,7 @@ def scrape_twitter(request):
         {
             "id": tweet["id"],
             "text": tweet["text"],
-            "created_at": tweet.get("created_at", datetime.utcnow().isoformat())
+            "created_at": tweet.get("created_at", datetime.now().isoformat())
         }
         for tweet in all_tweets
     ]
