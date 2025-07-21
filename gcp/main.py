@@ -77,5 +77,5 @@ def scrape_twitter(request):
     if errors:
         print("BQ Insert errors:", errors)
         return f"BigQuery insert errors: {errors}", 500
-
-import time    return f"{len(rows)} tweets stored in BigQuery."
+    
+    return f"{len(rows)} tweets stored in BigQuery."
