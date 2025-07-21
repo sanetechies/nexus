@@ -13,49 +13,29 @@ def scrape_twitter(request):
     token = "AAAAAAAAAAAAAAAAAAAAAP%2Bw3AEAAAAAIQXaifKjtfWIk%2FeN6allHYD%2B9gI%3DvmiDeBopOZQmu4UObyyLZc6HfY1v5tdJqect8lLeBSCBcowGiq"
 
     headers = {"Authorization": f"Bearer {token}"}
-    query = "bengaluru OR bangalore OR rain OR flood OR traffic OR civic OR weather"
-    url = "https://api.twitter.com/2/tweets/search/recent"
+    query = "weather OR civic OR flood"
+    url = f"https://api.twitter.com/2/tweets/search/recent?query={query}&tweet.fields=created_at&max_results=100"
 
-    max_pages = 10
-    next_token = None
-    all_tweets = []
-
-    for _ in range(max_pages):
-        params = {
-            "query": query,
-            "tweet.fields": "created_at",
-            "max_results": 100
-        }
-        if next_token:
-            params["next_token"] = next_token
-
-        res = requests.get(url, headers=headers, params=params).json()
-        tweets = res.get("data", [])
-        all_tweets.extend(tweets)
-
-        next_token = res.get("meta", {}).get("next_token")
-        if not next_token:
-            break
+    response = requests.get(url, headers=headers).json()
+    print("Twitter API response:", response)
 
     rows = [
         {
             "id": tweet["id"],
             "text": tweet["text"],
-            "created_at": tweet.get("created_at", datetime.utcnow().isoformat())
+            "created_at": tweet.get("created_at", datetime.now().isoformat())
         }
-        for tweet in all_tweets
+        for tweet in response.get("data", [])
     ]
 
-    try:
-        bq = bigquery.Client()
-        table_id = f"{project_id}.social_data.twitter_data"
-        errors = bq.insert_rows_json(table_id, rows)
-        if errors:
-            print("BQ Insert errors:", errors)
-            return jsonify({"error": errors}), 500
+    if not rows:
+        return "No tweets found for the query. Nothing inserted to BigQuery."
 
-        return jsonify({"message": f"{len(rows)} tweets stored in BigQuery."})
+    bq = bigquery.Client()
+    table_id = f"{project_id}.social_data.twitter_data"
+    errors = bq.insert_rows_json(table_id, rows)
+    if errors:
+        print("BQ Insert errors:", errors)
+        return f"BigQuery insert errors: {errors}", 500
 
-    except Exception as e:
-        print("ERROR:", e)
-        return jsonify({"error": str(e)}), 500
+    return f"{len(rows)} tweets stored in BigQuery."
